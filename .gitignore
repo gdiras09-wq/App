@@ -1,0 +1,17 @@
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+.npmrc
+credentials.json
+secrets.json
+node_modules/
+*.log
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
