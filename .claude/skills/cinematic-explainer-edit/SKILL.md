@@ -77,7 +77,8 @@ render contract; follow it). Then:
 - `index.html` (root, 1920×1080, duration = A-roll length): the A-roll `<video data-has-audio="true">`
   inside a wrapper (`#cam`) for punch-ins; one host per graphics scene with
   `data-track-kind="graphics"`; one captions host; `<audio>` SFX clips with ids.
-- Graphics scenes: start from `templates/` (copy, rename ids, edit text and numbers).
+- Graphics scenes: start from `templates/` with `python3 -I $SK/scripts/instantiate.py <template> compositions/<id>.html --id <id> --replace OLD NEW ...`
+  (it makes every element id unique, so one template can be used several times; the host id must match `--id`).
   Each template is a complete sub-composition with an opaque background, so while it plays it
   *is* the shot (cutaway). See `references/scenes.md` for what each template shows.
 - Subtitles: `python3 -I $SK/scripts/gen_subtitles.py words.json compositions/subs.html --width 1920 --height 1080`

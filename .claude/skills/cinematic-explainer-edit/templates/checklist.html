@@ -1,4 +1,4 @@
-<!-- Big count + clipboard whose boxes tick one by one. Edit: CFG.count / CFG.tickAt (seconds), LABEL, SUB, row titles. -->
+<!-- Big count + clipboard whose boxes tick one by one. Edit: CFG.count / CFG.tickAt (seconds) / CFG.rows (row text), the big number, LABEL, SUB. -->
 <template>
   <style>
 #root { position: absolute; inset: 0; overflow: hidden; background:
@@ -9,12 +9,12 @@
     .gt { background: linear-gradient(90deg, #c86bff, #6f7bff 55%, #4fa3ff); -webkit-background-clip: text; background-clip: text; color: transparent; }
     .sub { font-family: "Inter", sans-serif; font-weight: 500; font-size: 30px; color: #b8c2dd; }
     .floor { position: absolute; left: 0; right: 0; top: 820px; height: 260px; background: linear-gradient(rgba(255,255,255,.035), transparent); }
-    .board { position: absolute; left: 1060px; top: 170px; width: 480px; height: 620px; border-radius: 18px;
+    .board { position: absolute; left: 1020px; top: 170px; width: 580px; height: 620px; border-radius: 18px;
              background: linear-gradient(160deg, #e6c79b, #b98f5e); box-shadow: 0 40px 80px rgba(0,0,0,.6); }
-    .paper { position: absolute; left: 1090px; top: 230px; width: 420px; height: 540px; border-radius: 6px; background: linear-gradient(#ffffff, #eef0f5); }
-    .clip-top { position: absolute; left: 1220px; top: 145px; width: 160px; height: 70px; border-radius: 12px; background: linear-gradient(#f4f6fb, #8d95a9); }
-    .row { position: absolute; left: 1130px; display: flex; align-items: center; gap: 18px; font: 800 34px "Inter", sans-serif; color: #1d2230; }
-    .box { width: 40px; height: 40px; border: 4px solid #3a4152; border-radius: 6px; position: relative; }
+    .paper { position: absolute; left: 1050px; top: 230px; width: 520px; height: 540px; border-radius: 6px; background: linear-gradient(#ffffff, #eef0f5); }
+    .clip-top { position: absolute; left: 1230px; top: 145px; width: 160px; height: 70px; border-radius: 12px; background: linear-gradient(#f4f6fb, #8d95a9); }
+    .row { position: absolute; left: 1090px; width: 440px; display: flex; align-items: center; gap: 18px; font: 800 34px "Inter", sans-serif; color: #1d2230; }
+    .box { flex: none; width: 40px; height: 40px; border: 4px solid #3a4152; border-radius: 6px; position: relative; }
     .tick { position: absolute; left: 6px; top: -6px; width: 16px; height: 30px; border: solid #e9407a; border-width: 0 7px 7px 0; }
     .line { width: 200px; height: 6px; border-radius: 3px; background: #d5d9e3; }
   </style>
@@ -27,17 +27,17 @@
     </div>
     <div id="cl-obj">
       <div class="board"></div><div class="paper"></div><div class="clip-top"></div>
-      <div style="position:absolute; left: 1130px; top: 270px; font: 800 28px Inter; color:#1d2230; letter-spacing:.06em;">TODAY</div>
-      <div style="position:absolute; left: 1130px; top: 312px; width: 340px; height: 2px; background: #c9ced9;"></div>
+      <div style="position:absolute; left: 1090px; top: 270px; font: 800 28px Inter; color:#1d2230; letter-spacing:.06em;">TODAY</div>
+      <div style="position:absolute; left: 1090px; top: 312px; width: 440px; height: 2px; background: #c9ced9;"></div>
       <div id="cl-rows"></div>
     </div>
   </div>
   <script>
-    const CFG = { count: 3, tickAt: [0.9, 1.4, 1.9] };
+    const CFG = { count: 3, tickAt: [0.9, 1.4, 1.9], rows: [] };  // rows: optional text per row, e.g. ["Send texts", "Get a reply"]
     const tl = gsap.timeline({ paused: true });
     const rows = document.querySelector("#cl-rows");
     for (let i = 0; i < CFG.count; i++)
-      rows.insertAdjacentHTML("beforeend", '<div class="row" style="top:' + (350 + i * 90) + 'px"><div class="box"><div id="cl-t' + i + '" class="tick"></div></div>' + (i + 1) + '<div class="line"></div></div>');
+      rows.insertAdjacentHTML("beforeend", '<div class="row" style="top:' + (350 + i * 90) + 'px"><div class="box"><div id="cl-t' + i + '" class="tick"></div></div>' + (CFG.rows[i] ? '<span style="font-size:28px; line-height:1.15; flex:1;">' + CFG.rows[i] + '</span>' : (i + 1) + '<div class="line"></div>') + '</div>');
     tl.fromTo("#cl-obj", { opacity: 0, y: 40, rotation: 3 }, { opacity: 1, y: 0, rotation: 0, duration: 0.6, ease: "expo.out" }, 0);
     tl.fromTo("#cl-n", { opacity: 0, scale: 1.6, filter: "blur(12px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.5, ease: "expo.out" }, 0.1);
     tl.fromTo("#cl-l", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.5, ease: "expo.out" }, 0.25);
