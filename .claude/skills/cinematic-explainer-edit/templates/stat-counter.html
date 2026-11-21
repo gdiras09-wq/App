@@ -1,0 +1,43 @@
+<!-- Rolling number over a scrolling timeline ruler. Edit: KICKER text, CFG (from/to/prefix/suffix/grouping). -->
+<template>
+  <style>
+#root { position: absolute; inset: 0; overflow: hidden; background:
+      radial-gradient(ellipse 60% 55% at 50% 48%, rgba(38,62,170,.42), transparent 70%),
+      radial-gradient(ellipse 40% 40% at 78% 28%, rgba(126,52,180,.22), transparent 70%), #05060d; }
+    .kick { font-family: "Inter", sans-serif; font-weight: 700; font-size: 28px; letter-spacing: .32em; color: #9fb0d8; text-transform: uppercase; }
+    .hero { font-family: "Montserrat", sans-serif; font-weight: 900; color: #fff; line-height: .92; letter-spacing: -.02em; }
+    .gt { background: linear-gradient(90deg, #c86bff, #6f7bff 55%, #4fa3ff); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .sub { font-family: "Inter", sans-serif; font-weight: 500; font-size: 30px; color: #b8c2dd; }
+    .floor { position: absolute; left: 0; right: 0; top: 820px; height: 260px; background: linear-gradient(rgba(255,255,255,.035), transparent); }
+    .rul { position: absolute; left: 0; top: 760px; width: 4000px; height: 120px; }
+    .rul i { position: absolute; bottom: 60px; width: 2px; background: rgba(160,175,220,.35); }
+    .rul b { position: absolute; bottom: 20px; font: italic 600 22px "Inter", sans-serif; color: #7d8bb3; transform: translateX(-50%); }
+    .base { position: absolute; left: 0; right: 0; top: 819px; height: 2px; background: linear-gradient(90deg, transparent, rgba(160,175,220,.5), transparent); }
+  </style>
+  <div id="root" data-composition-id="stat-counter" data-width="1920" data-height="1080">
+    <div class="floor"></div>
+    <div id="sc-k" class="kick" style="position:absolute; top: 150px; width: 100%; text-align: center;">BACK IN HISTORY</div>
+    <div id="sc-n" class="hero" style="position:absolute; top: 200px; width: 100%; text-align: center; font-size: 190px;">2026</div>
+    <div id="sc-r" class="rul"></div>
+    <div class="base"></div>
+  </div>
+  <script>
+    const CFG = { from: 2026, to: 1453, prefix: "", suffix: "", group: false, tickLabelFrom: 2100, tickLabelStep: -100 };
+    const tl = gsap.timeline({ paused: true });
+    const r = document.querySelector("#sc-r");
+    for (let i = 0; i < 80; i++) {
+      const x = i * 50, big = i % 4 === 0;
+      r.insertAdjacentHTML("beforeend", '<i style="left:' + x + 'px;height:' + (big ? 34 : 16) + 'px"></i>' +
+        (big ? '<b style="left:' + x + 'px">' + (CFG.tickLabelFrom + (i / 4) * CFG.tickLabelStep) + '</b>' : ''));
+    }
+    const n = document.querySelector("#sc-n"), c = { v: CFG.from };
+    const fmt = v => CFG.prefix + (CFG.group ? Math.round(v).toLocaleString("en-US") : String(Math.round(v))) + CFG.suffix;
+    n.textContent = fmt(CFG.from);
+    tl.fromTo("#sc-k", { opacity: 0, y: -12 }, { opacity: 1, y: 0, duration: 0.6, ease: "expo.out" }, 0.05);
+    tl.fromTo("#sc-n", { opacity: 0, y: 30, filter: "blur(10px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.5, ease: "expo.out" }, 0.1);
+    tl.fromTo(c, { v: CFG.from }, { v: CFG.to, duration: 1.4, ease: "power3.inOut", onUpdate: () => { n.textContent = fmt(c.v); } }, 0.45);
+    tl.fromTo("#sc-r", { x: -200 }, { x: -1600, duration: 2.6, ease: "power2.inOut" }, 0.2);
+    tl.fromTo("#sc-n", { scale: 1 }, { scale: 1.04, duration: 0.25, ease: "power2.out" }, 1.85);
+    window.__timelines["stat-counter"] = tl;
+  </script>
+</template>

@@ -1,0 +1,53 @@
+<!-- Named idea: hero WORD + sub, phone showing a moving wave, optional contrast WORD2 slides in at CFG.secondAt.
+     Edit: WORD, SUB, WORD2, SUB2, CFG.secondAt (set null to drop the second word). -->
+<template>
+  <style>
+#root { position: absolute; inset: 0; overflow: hidden; background:
+      radial-gradient(ellipse 60% 55% at 50% 48%, rgba(38,62,170,.42), transparent 70%),
+      radial-gradient(ellipse 40% 40% at 78% 28%, rgba(126,52,180,.22), transparent 70%), #05060d; }
+    .kick { font-family: "Inter", sans-serif; font-weight: 700; font-size: 28px; letter-spacing: .32em; color: #9fb0d8; text-transform: uppercase; }
+    .hero { font-family: "Montserrat", sans-serif; font-weight: 900; color: #fff; line-height: .92; letter-spacing: -.02em; }
+    .gt { background: linear-gradient(90deg, #c86bff, #6f7bff 55%, #4fa3ff); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .sub { font-family: "Inter", sans-serif; font-weight: 500; font-size: 30px; color: #b8c2dd; }
+    .floor { position: absolute; left: 0; right: 0; top: 820px; height: 260px; background: linear-gradient(rgba(255,255,255,.035), transparent); }
+    .phone { position: absolute; left: 790px; top: 150px; width: 340px; height: 680px; border-radius: 46px;
+             background: linear-gradient(160deg, #1c2033, #0b0d16); border: 3px solid #3a4160; box-shadow: 0 40px 90px rgba(0,0,0,.7), inset 0 0 0 8px #10131f; }
+    .card { position: absolute; left: 820px; top: 520px; width: 280px; padding: 18px; border-radius: 18px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); }
+  </style>
+  <div id="root" data-composition-id="concept" data-width="1920" data-height="1080">
+    <div class="floor"></div>
+    <div style="position:absolute; left: 180px; top: 380px; width: 560px;">
+      <div id="cc-w" class="hero" style="font-size: 130px;">SIGNAL</div>
+      <div id="cc-s" class="sub" style="margin-top: 16px;">= the most urgent thing</div>
+    </div>
+    <div id="cc-ph">
+      <div class="phone"></div>
+      <div class="kick" style="position:absolute; left: 790px; width: 340px; top: 230px; text-align:center; font-size: 18px;">SIGNAL</div>
+      <svg style="position:absolute; left: 820px; top: 290px;" width="280" height="160" viewBox="0 0 280 160">
+        <path id="cc-wave" d="M0 80 C 35 10, 70 10, 105 80 S 175 150, 210 80 S 280 10, 280 10" fill="none" stroke="#8fb4ff" stroke-width="6" stroke-linecap="round" stroke-dasharray="520" stroke-dashoffset="520"/>
+      </svg>
+      <div id="cc-card" class="card">
+        <div style="display:inline-block; font: 800 14px Inter; color:#fff; background:#e9407a; border-radius: 6px; padding: 4px 10px; letter-spacing:.08em;">URGENT</div>
+        <div style="font: 700 26px Inter; color:#fff; margin-top: 10px;">The most urgent thing</div>
+        <div style="margin-top: 12px; height: 6px; border-radius: 3px; background: rgba(255,255,255,.12);"><div id="cc-bar" style="height:6px; width:0; border-radius:3px; background: linear-gradient(90deg,#c86bff,#4fa3ff);"></div></div>
+      </div>
+    </div>
+    <div id="cc-2" style="position:absolute; left: 1250px; top: 380px; width: 560px;">
+      <div class="hero" style="font-size: 110px; color:#6f7894;">NOISE</div>
+      <div class="sub" style="margin-top: 16px; color:#7d86a3;">= everything else</div>
+    </div>
+  </div>
+  <script>
+    const CFG = { secondAt: 1.6 };
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#cc-w", { opacity: 0, x: -40, filter: "blur(10px)" }, { opacity: 1, x: 0, filter: "blur(0px)", duration: 0.55, ease: "expo.out" }, 0.05);
+    tl.fromTo("#cc-s", { opacity: 0 }, { opacity: 1, duration: 0.4 }, 0.35);
+    tl.fromTo("#cc-ph", { opacity: 0, y: 60, rotationY: -18 }, { opacity: 1, y: 0, rotationY: 0, duration: 0.7, ease: "expo.out" }, 0.1);
+    tl.fromTo("#cc-wave", { attr: { "stroke-dashoffset": 520 } }, { attr: { "stroke-dashoffset": 0 }, duration: 1.2, ease: "power2.out" }, 0.4);
+    tl.fromTo("#cc-card", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4, ease: "expo.out" }, 0.6);
+    tl.fromTo("#cc-bar", { width: "0%" }, { width: "72%", duration: 1.0, ease: "power3.out" }, 0.8);
+    if (CFG.secondAt !== null) tl.fromTo("#cc-2", { opacity: 0, x: 60, filter: "blur(10px)" }, { opacity: 1, x: 0, filter: "blur(0px)", duration: 0.5, ease: "expo.out" }, CFG.secondAt);
+    else tl.set("#cc-2", { opacity: 0 }, 0);
+    window.__timelines["concept"] = tl;
+  </script>
+</template>
