@@ -1,0 +1,53 @@
+<!-- Chrome gauge, needle sweeps to VALUE; big gradient % beside it. Edit: CFG.value, KICKER, WORD. -->
+<template>
+  <style>
+#root { position: absolute; inset: 0; overflow: hidden; background:
+      radial-gradient(ellipse 60% 55% at 50% 48%, rgba(38,62,170,.42), transparent 70%),
+      radial-gradient(ellipse 40% 40% at 78% 28%, rgba(126,52,180,.22), transparent 70%), #05060d; }
+    .kick { font-family: "Inter", sans-serif; font-weight: 700; font-size: 28px; letter-spacing: .32em; color: #9fb0d8; text-transform: uppercase; }
+    .hero { font-family: "Montserrat", sans-serif; font-weight: 900; color: #fff; line-height: .92; letter-spacing: -.02em; }
+    .gt { background: linear-gradient(90deg, #c86bff, #6f7bff 55%, #4fa3ff); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .sub { font-family: "Inter", sans-serif; font-weight: 500; font-size: 30px; color: #b8c2dd; }
+    .floor { position: absolute; left: 0; right: 0; top: 820px; height: 260px; background: linear-gradient(rgba(255,255,255,.035), transparent); }
+    .dial { position: absolute; left: 330px; top: 170px; width: 620px; height: 620px; border-radius: 50%;
+            background: radial-gradient(circle at 50% 45%, #fdfdff 0 55%, #d7dbe6 66%, #8f97ab 70%, #f1f3f9 73%, #6b7387 76%, #20242e 78%, transparent 79%);
+            box-shadow: 0 40px 80px rgba(0,0,0,.6); }
+    .needle { position: absolute; left: 638px; top: 300px; width: 4px; height: 190px; background: linear-gradient(#e9407a, #ff6aa2); border-radius: 3px; transform-origin: 50% 100%; }
+    .hub { position: absolute; left: 622px; top: 462px; width: 36px; height: 36px; border-radius: 50%; background: radial-gradient(#fff, #9aa3b8); box-shadow: 0 2px 6px rgba(0,0,0,.4); }
+    .lbl { position: absolute; font: 700 26px "Inter", sans-serif; color: #2c3140; transform: translate(-50%, -50%); }
+  </style>
+  <div id="root" data-composition-id="gauge" data-width="1920" data-height="1080">
+    <div class="floor"></div>
+    <div id="gg-obj">
+      <div class="dial"></div>
+      <div id="gg-ticks"></div>
+      <div class="lbl" style="left:640px; top:600px; font-size: 24px; letter-spacing:.08em;">SIGNAL</div>
+      <div id="gg-nd" class="needle" data-layout-allow-occlusion></div>
+      <div class="hub" data-layout-allow-occlusion></div>
+    </div>
+    <div style="position:absolute; left: 1080px; top: 330px;">
+      <div id="gg-k" class="kick">CLOSE TO</div>
+      <div id="gg-v" class="hero gt" style="font-size: 200px; margin-top: 10px;">0%</div>
+      <div id="gg-w" class="hero" style="font-size: 120px;">SIGNAL</div>
+    </div>
+  </div>
+  <script>
+    const CFG = { value: 100 };
+    const tl = gsap.timeline({ paused: true });
+    const tk = document.querySelector("#gg-ticks");
+    for (let v = 0; v <= 100; v += 5) {
+      const a = (-225 + v * 2.7) * Math.PI / 180, big = v % 20 === 0, r1 = 255, r2 = big ? 225 : 238;
+      const x1 = 640 + r1 * Math.cos(a), y1 = 480 + r1 * Math.sin(a), len = r1 - r2;
+      tk.insertAdjacentHTML("beforeend", '<div style="position:absolute;left:' + x1 + 'px;top:' + y1 + 'px;width:' + len + 'px;height:' + (big ? 4 : 2) +
+        'px;background:#3a4050;transform-origin:0 50%;transform:rotate(' + (a * 180 / Math.PI + 180) + 'deg)"></div>');
+      if (big) tk.insertAdjacentHTML("beforeend", '<div class="lbl" style="left:' + (640 + 190 * Math.cos(a)) + 'px;top:' + (480 + 190 * Math.sin(a)) + 'px">' + v + '</div>');
+    }
+    const val = document.querySelector("#gg-v"), c = { v: 0 };
+    tl.fromTo("#gg-obj", { opacity: 0, scale: 0.92, y: 30 }, { opacity: 1, scale: 1, y: 0, duration: 0.6, ease: "expo.out" }, 0);
+    tl.fromTo("#gg-k", { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, 0.15);
+    tl.fromTo("#gg-w", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.5, ease: "expo.out" }, 0.3);
+    tl.fromTo("#gg-nd", { rotation: -135 }, { rotation: -135 + CFG.value * 2.7, duration: 1.3, ease: "power3.out" }, 0.35);
+    tl.fromTo(c, { v: 0 }, { v: CFG.value, duration: 1.3, ease: "power3.out", onUpdate: () => { val.textContent = Math.round(c.v) + "%"; } }, 0.35);
+    window.__timelines["gauge"] = tl;
+  </script>
+</template>
